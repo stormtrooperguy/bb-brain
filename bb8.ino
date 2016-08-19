@@ -1,7 +1,6 @@
-/*************************************************** 
+/***************************************************
   This is based on an example for the Adafruit VS1053 Codec Breakout
  ****************************************************/
-
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
 #include <Adafruit_VS1053.h>
@@ -17,28 +16,28 @@
 Adafruit_VS1053_FilePlayer musicPlayer = Adafruit_VS1053_FilePlayer(SHIELD_RESET, SHIELD_CS, SHIELD_DCS, DREQ, CARDCS);
 
 void setup() {
-  
+
   // speaker volume
-  int volume = 80;
-  
+  int volume = 20;
+
   Serial.begin(9600);
 
   // make our random more random
   randomSeed(analogRead(0));
-  
+
   // initialise the music player
   if (! musicPlayer.begin()) { // initialise the music player
-     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
-     while (1);
+    Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+    while (1);
   }
- 
+
   if (!SD.begin(CARDCS)) {
     Serial.println(F("SD failed, or not present"));
     while (1);  // don't do anything more
   }
-  
+
   // Set volume for left, right channels. lower numbers == louder volume!
-  musicPlayer.setVolume(volume,volume);
+  musicPlayer.setVolume(volume, volume);
 
   // Set all of our musicPlayer GPIO pins to output.
 
@@ -46,12 +45,16 @@ void setup() {
     musicPlayer.GPIO_pinMode(thisPin, OUTPUT);
   }
 
-  /***** Two interrupt options! *******/ 
+  for (int thisPin = 22; thisPin <= 55; thisPin++) {
+    pinMode(thisPin, OUTPUT);
+  }
+
+  /***** Two interrupt options! *******/
   // This option uses timer0, this means timer1 & t2 are not required
   // (so you can use 'em for Servos, etc) BUT millis() can lose time
   // since we're hitchhiking on top of the millis() tracker
   //musicPlayer.useInterrupt(VS1053_FILEPLAYER_TIMER0_INT);
-  
+
   // This option uses a pin interrupt. No timers required! But DREQ
   // must be on an interrupt pin. For Uno/Duemilanove/Diecimilla
   // that's Digital #2 or #3
@@ -61,17 +64,21 @@ void setup() {
     Serial.println(F("DREQ pin is not an interrupt pin"));
 }
 
-void loop() {  
+void loop() {
+
+  // turn off the vocoder at the start of the loop. Pause a bit. Then go. 
+
+  digitalWrite(22, LOW);
 
   // This is a super dirty way to get a shuffled playlist.
   // The files are all named nnn.mp3. We just pick a random number
   // between 1 and 138 and play that file.
   //
   // The conversion between strings and chars was based on googling
-  // and may not actually be good. 
+  // and may not actually be good.
 
-  int trackList = random(0,100);
-  
+  int trackList = random(0, 100);
+
   String fileExt = ".mp3";
   String curTrack = trackList + fileExt;
 
@@ -90,28 +97,66 @@ void loop() {
   Serial.println(F("Started playing"));
 
   while (musicPlayer.playingMusic) {
-    
-    // pin 1 is always on. There will be a bunch of LEDs hooked up to
-    // this one. 
-    
-    musicPlayer.GPIO_digitalWrite(1, HIGH);
 
-    // Pin 2 is the vocoder. Ultimately this should pulse
+    // 22      = Vocodor
+    // 24      = Eye
+    // 26      = Holo
+    // 28      = Blue logic
+    // 30      = White steady logic
+    // 32 - 40 = White random logic
+
+    // Pin 22 is the vocoder. Ultimately this should pulse
     // to the music, but one step at a time. For now flickering is OK.
-    
-    musicPlayer.GPIO_digitalWrite(2,HIGH);
-    delay(random(5,20));
-    musicPlayer.GPIO_digitalWrite(2, LOW);
 
-    // Last we want to blink a bunch of LEDs in random order at random
-    // intervals
-    
-    int thisPin = random(3,7);
-    int thisDelay = random(50, 100);
+    digitalWrite(22, HIGH);
+    delay(random(5, 20));
+    digitalWrite(22, LOW);
 
-    musicPlayer.GPIO_digitalWrite(thisPin, HIGH);
-    delay(thisDelay);
-    musicPlayer.GPIO_digitalWrite(thisPin, LOW);
+    // 24 Eye always on
+
+    digitalWrite(24, HIGH);
+
+    // 26 Holo randomly on off? For now always on
+
+    digitalWrite(26, HIGH);
+
+    // 28 Blue logic, always on
+
+    digitalWrite(28, HIGH);
+
+    //30 White logic, always on
+
+    digitalWrite(30, HIGH);
+
+    // 32 - 40, random white logic. 
+
+   //int logicPins[] = {32, 34, 36, 38, 40};
+
+   //int thisPin = random(0,4);
+
+   //digitalWrite(thisPin, HIGH);
+   //delay(random(50, 100));
+   //digitalWrite(thisPin, LOW);
+
+    digitalWrite(32, HIGH);
+    delay(random(5, 20));
+    digitalWrite(32, LOW);
+
+    digitalWrite(34, HIGH);
+    delay(random(5, 20));
+    digitalWrite(34, LOW);
+
+    digitalWrite(36, HIGH);
+    delay(random(5, 20));
+    digitalWrite(36, LOW);
+
+    digitalWrite(38, HIGH);
+    delay(random(5, 20));
+    digitalWrite(38, LOW);
+
+    digitalWrite(40, HIGH);
+    delay(random(5, 20));
+    digitalWrite(40, LOW);
 
   }
 
