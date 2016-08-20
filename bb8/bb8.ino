@@ -18,7 +18,7 @@ Adafruit_VS1053_FilePlayer musicPlayer = Adafruit_VS1053_FilePlayer(SHIELD_RESET
 void setup() {
 
   // speaker volume
-  int volume = 20;
+  int volume = 40;
 
   Serial.begin(9600);
 
@@ -66,6 +66,19 @@ void setup() {
 
 void loop() {
 
+  // 26 Holo randomly on off
+
+  int holoOn = random(0,100);
+
+  if (holoOn % 2) 
+  { 
+    digitalWrite(26, HIGH);    
+  }
+  else
+  {
+    digitalWrite(26, LOW);
+  }
+
   // turn off the vocoder at the start of the loop. Pause a bit. Then go. 
 
   digitalWrite(22, LOW);
@@ -77,7 +90,7 @@ void loop() {
   // The conversion between strings and chars was based on googling
   // and may not actually be good.
 
-  int trackList = random(0, 100);
+  int trackList = random(1, 27);
 
   String fileExt = ".mp3";
   String curTrack = trackList + fileExt;
@@ -96,6 +109,8 @@ void loop() {
   }
   Serial.println(F("Started playing"));
 
+
+
   while (musicPlayer.playingMusic) {
 
     // 22      = Vocodor
@@ -109,16 +124,12 @@ void loop() {
     // to the music, but one step at a time. For now flickering is OK.
 
     digitalWrite(22, HIGH);
-    delay(random(5, 20));
+    delay(random(2, 15));
     digitalWrite(22, LOW);
 
     // 24 Eye always on
 
     digitalWrite(24, HIGH);
-
-    // 26 Holo randomly on off? For now always on
-
-    digitalWrite(26, HIGH);
 
     // 28 Blue logic, always on
 
@@ -138,25 +149,13 @@ void loop() {
    //delay(random(50, 100));
    //digitalWrite(thisPin, LOW);
 
-    digitalWrite(32, HIGH);
-    delay(random(5, 20));
-    digitalWrite(32, LOW);
 
-    digitalWrite(34, HIGH);
-    delay(random(5, 20));
-    digitalWrite(34, LOW);
+    int thisPin = random(32, 41);
+    int thisDelay = random(5, 10);
 
-    digitalWrite(36, HIGH);
-    delay(random(5, 20));
-    digitalWrite(36, LOW);
-
-    digitalWrite(38, HIGH);
-    delay(random(5, 20));
-    digitalWrite(38, LOW);
-
-    digitalWrite(40, HIGH);
-    delay(random(5, 20));
-    digitalWrite(40, LOW);
+    digitalWrite(thisPin, HIGH);
+    delay(thisDelay);
+    digitalWrite(thisPin, LOW);
 
   }
 
