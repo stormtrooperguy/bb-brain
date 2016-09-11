@@ -18,7 +18,7 @@ Adafruit_VS1053_FilePlayer musicPlayer = Adafruit_VS1053_FilePlayer(SHIELD_RESET
 void setup() {
 
   // speaker volume
-  int volume = 40;
+  int volume = 10;
 
   Serial.begin(9600);
 
@@ -109,8 +109,6 @@ void loop() {
   }
   Serial.println(F("Started playing"));
 
-
-
   while (musicPlayer.playingMusic) {
 
     // 22      = Vocodor
@@ -124,7 +122,7 @@ void loop() {
     // to the music, but one step at a time. For now flickering is OK.
 
     digitalWrite(22, HIGH);
-    delay(random(2, 15));
+    delay(random(2, 4));
     digitalWrite(22, LOW);
 
     // 24 Eye always on

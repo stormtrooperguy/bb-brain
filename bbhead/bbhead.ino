@@ -13,27 +13,28 @@
 
 Servo bbheadRotation; // Rotation of the head
 
-//Servo bbheadTilt; // Angle of the head
-
-// We don't really want the head moving by 1 degree with a 0.453 second delay, so 
-// set some defined intervals and positions to use. 
-
-int headPos[] = { 0, 45, 90, 135, 180 };
-int headIntervals[] = { 1000, 5000, 10000, 15000, 20000, 25000, 30000 };
-
 void setup() {
+
+  // set a bunch of digital pins to output and turn them on.
+
+  int red = 10;
+  int blue = 11;
+  int amber = 12;
+
+  pinMode(red, OUTPUT);
+  pinMode(blue, OUTPUT);
+  pinMode(amber, OUTPUT);
+
+  digitalWrite(red, HIGH);
+  digitalWrite(blue, HIGH);
+  digitalWrite(amber, HIGH);
 
   // make the randomness more random
   randomSeed(analogRead(0));
 
-  // serial communication to help see what's happening
-  Serial.begin(9600);    
-
-  // set a bunch of digital pins to output and turn them on.
-
   // Connect to the servo and center it. 
-  bbhead.attach(9); 
-  bbhead.write(90);
+  bbheadRotation.attach(8); 
+  bbheadRotation.write(90);
 
   // Pause for a couple of beats to let the servo reach the desired position.
   delay(15);
@@ -42,21 +43,19 @@ void setup() {
 
 void loop() {
 
-  // For this loop, select a head stop and delay. 
-  int headStop = random(0,4);
-  int headDelay = random(0, 6);
+  // look left
 
-  // print these to the serial monitor. I'll take this out when I'm satisfied.
-  Serial.println(headStop);
-  Serial.println(headDelay);
-  Serial.println();
+  bbheadRotation.write(35);
+  delay(1000);
 
-  // move to the selected position and wait. 
-  bbhead.write(headPos[headStop]);
-  delay(headIntervals[headDelay]);
+  // look right
 
-  // I want some led activity in the body, not just on. 
-  // implement some function to decide if the LEDs should flicker 
-  // somewhere. Code TBD.
+  bbheadRotation.write(145);
+  delay(1000);
+
+  // return to center
+
+  bbheadRotation.write(90);
+  delay(5000);
   
 }
